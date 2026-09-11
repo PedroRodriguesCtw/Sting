@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>STING | MyJourney Team & Projects</title>
-  <meta name="description" content="Public landing page for the STING team and its project overview: VideoAR and Shud." />
+  <meta name="description" content="Public landing page for Team Sting and its project overview: VideoAR and Shud." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=20260911" />
 </head>
 <body>
   <header class="topbar">
@@ -27,7 +27,7 @@
     <section class="hero container">
       <div class="hero-copy">
         <p class="eyebrow">MyJourney</p>
-        <h1>STING Team</h1>
+        <h1>Team Sting</h1>
         <p class="lead">
           STING is a focused team delivering augmented driving experiences and guidance-driven display concepts for the next generation of in-vehicle experiences.
         </p>
@@ -38,26 +38,29 @@
       </div>
 
       <div class="hero-visual card float">
-        <img src="assets/sting-team-logo.png" alt="STING team overview" />
+        <img src="assets/sting-team-logo.png" alt="Team Sting overview" />
       </div>
     </section>
 
     <section id="team" class="container section">
       <div class="section-head">
         <h2>Team Sting</h2>
-        <p>Core squad and collaboration structure.</p>
+        <p>Core Team Sting squad and collaboration structure.</p>
       </div>
 
       <div class="grid grid-2">
-        <article class="card">
-          <h3>Squad</h3>
-          <ul class="clean-list">
-            <li>Pedro SK</li>
-            <li>Frederico RKD</li>
-            <li>Cleyde SKD</li>
-            <li>Tiago SKD</li>
-          </ul>
-          <p class="meta">Unit: MyJourney</p>
+        <article class="card squad-card">
+          <div class="squad-content">
+            <h3>Squad</h3>
+            <ul class="clean-list">
+              <li>Pedro SK</li>
+              <li>Frederico RKD</li>
+              <li>Cleyde RKD</li>
+              <li>Tiago RKD</li>
+            </ul>
+            <p class="meta">Unit: MyJourney</p>
+          </div>
+          <img class="myjourney-logo" src="assets/myjourney_logo.jpeg" alt="MyJourney" />
         </article>
 
         <article class="card pulse">
@@ -80,8 +83,12 @@
 
       <div class="grid grid-2">
         <article class="card project">
+          <img class="project-brand" src="assets/bmwmini.png" alt="BMW and MINI" />
           <h3>VideoAR</h3>
           <p class="meta">Augmented View</p>
+          <div class="project-visual">
+            <img src="assets/videoar.png" alt="VideoAR navigation guidance display" />
+          </div>
           <p>
             VideoAR brings navigation guidance into an augmented-reality display experience, helping the driver interpret maneuver information in a more intuitive way.
           </p>
@@ -96,8 +103,12 @@
         </article>
 
         <article class="card project">
-          <h3>Shud</h3>
+          <img class="project-brand" src="assets/bmwmini.png" alt="BMW and MINI" />
+          <h3>Slope HUD (SHUD)</h3>
           <p class="meta">Slope Headup Display</p>
+          <div class="project-visual project-visual-shud">
+            <img src="assets/SHUD.png" alt="SHUD head-up display in a driving environment" />
+          </div>
           <p>
             Shud combines driving guidance and navigation context into a unified head-up display experience for situational awareness and driver support.
           </p>
@@ -136,10 +147,10 @@
         <h3>STING assistant</h3>
         <div class="chatbot-status" id="chat-status">Checking access to the team references…</div>
         <div class="chat-messages" id="chat-messages" aria-live="polite">
-          <div class="chat-message bot">Ask me about the STING team, squad, unit, or projects.</div>
+          <div class="chat-message bot">Ask me about Team Sting, squad, unit, or projects.</div>
         </div>
         <div class="chatbot-input-row">
-          <input id="chat-input" type="text" placeholder="Ask about the STING team..." aria-label="Question for the STING assistant" disabled />
+          <input id="chat-input" type="text" placeholder="Ask about Team Sting..." aria-label="Question for the Team Sting assistant" disabled />
           <button id="chat-send" type="button" disabled>Send</button>
         </div>
         <div class="chatbot-actions">
@@ -171,7 +182,7 @@
     const chatSpeak = document.getElementById('chat-speak');
 
     let botActive = true;
-    let currentBotReply = 'Ask me about the STING team, squad, unit, or projects.';
+    let currentBotReply = 'Ask me about Team Sting, squad, unit, or projects.';
     let recognition = null;
     let isListening = false;
 
@@ -217,7 +228,7 @@
       const q = question.toLowerCase();
 
       if (!q || /^(hi|hello|hey|ola|olá|good morning|good afternoon|good evening)/.test(q)) {
-        return 'Hello! Ask me about the STING team, members, unit, or the project focus.';
+        return 'Hello! Ask me about Team Sting, members, unit, or the project focus.';
       }
 
       if (/team|squad|who|what.*team|who.*team/.test(q)) {
@@ -248,7 +259,7 @@
         return 'STING delivers in-vehicle guidance and display concepts that combine navigation context with intuitive driving support.';
       }
 
-      return 'I can answer questions about the STING team, its members, unit, and main project areas: VideoAR and Shud.';
+      return 'I can answer questions about Team Sting, its members, unit, and main project areas: VideoAR and Shud.';
     }
 
     async function checkInternalAccess() {
