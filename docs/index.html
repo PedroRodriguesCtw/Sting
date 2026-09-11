@@ -38,7 +38,7 @@
       </div>
 
       <div class="hero-visual card float">
-        <img src="assets/team-sting.png" alt="STING team overview" />
+        <img src="assets/sting-team-logo.png" alt="STING team overview" />
       </div>
     </section>
 
@@ -62,6 +62,12 @@
 
         <article class="card pulse">
           <img src="assets/team-members.png" alt="Team members" />
+          <div class="link-box">
+            <a href="https://pulsar.criticaltechworks.com/units?id=a350d356-7341-49b7-b61c-49a0ac42bed1&units=a350d356-7341-49b7-b61c-49a0ac42bed1:squads&organizational-units-teams=e2f1c3a6-1870-46cb-a67d-d5ac8e30277d:general" target="_blank" rel="noopener noreferrer">Team Sting</a>
+          </div>
+          <div class="link-box">
+            <a href="https://pulsar.criticaltechworks.com/people?q=sting" target="_blank" rel="noopener noreferrer">Team members</a>
+          </div>
         </article>
       </div>
     </section>
@@ -124,6 +130,20 @@
         </div>
       </div>
     </section>
+
+    <section class="container section">
+      <div class="card chatbot-panel" id="team-chatbot">
+        <h3>STING assistant</h3>
+        <div class="chatbot-status" id="chat-status">Checking access to the team references…</div>
+        <div class="chat-messages" id="chat-messages" aria-live="polite">
+          <div class="chat-message bot">Ask me about the STING team, squad, unit, or projects.</div>
+        </div>
+        <div class="chatbot-input-row">
+          <input id="chat-input" type="text" placeholder="Ask about the STING team..." aria-label="Question for the STING assistant" disabled />
+          <button id="chat-send" type="button" disabled>Send</button>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="footer">
@@ -131,5 +151,129 @@
       <p>STING | MyJourney</p>
     </div>
   </footer>
+
+  <script>
+    const TEAM_LINKS = [
+      'https://pulsar.criticaltechworks.com/units?id=a350d356-7341-49b7-b61c-49a0ac42bed1&units=a350d356-7341-49b7-b61c-49a0ac42bed1:squads&organizational-units-teams=e2f1c3a6-1870-46cb-a67d-d5ac8e30277d:general',
+      'https://pulsar.criticaltechworks.com/people?q=sting'
+    ];
+
+    const BOT_INACTIVE_TEXT = 'The STING assistant is inactive in this environment.';
+    const chatInput = document.getElementById('chat-input');
+    const chatSend = document.getElementById('chat-send');
+    const chatMessages = document.getElementById('chat-messages');
+    const chatStatus = document.getElementById('chat-status');
+
+    let botActive = true;
+
+    function addMessage(text, type) {
+      const node = document.createElement('div');
+      node.className = `chat-message ${type}`;
+      node.textContent = text;
+      chatMessages.appendChild(node);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function setBotInactive(message) {
+      botActive = false;
+      chatStatus.textContent = message;
+      chatInput.disabled = true;
+      chatSend.disabled = true;
+      addMessage(BOT_INACTIVE_TEXT, 'bot');
+    }
+
+    function getAnswer(question) {
+      const q = question.toLowerCase();
+
+      if (!q || /^(hi|hello|hey|ola|olá|good morning|good afternoon|good evening)/.test(q)) {
+        return 'Hello! Ask me about the STING team, members, unit, or the project focus.';
+      }
+
+      if (/team|squad|who|what.*team|who.*team/.test(q)) {
+        return 'STING is the MyJourney team focused on augmented driving experiences and guidance-driven display concepts.';
+      }
+
+      if (/member|members|people|integrant|squad/.test(q)) {
+        return 'The current STING squad includes Pedro SK, Frederico RKD, Cleyde SKD and Tiago SKD.';
+      }
+
+      if (/unit|myjourney|organization|org/.test(q)) {
+        return 'The team belongs to the MyJourney unit.';
+      }
+
+      if (/videoar|augmented view|project/.test(q)) {
+        return 'VideoAR is one of the main project tracks and focuses on augmented-reality guidance for driving experiences.';
+      }
+
+      if (/shud|slope|hud|head-up/.test(q)) {
+        return 'Shud is the Slope Head-Up Display project, focused on guidance and situational awareness in the driving context.';
+      }
+
+      if (/link|pulsar|team sting|team members|access|internal/.test(q)) {
+        return 'The official references are the Team Sting and Team members links in Pulsar, which are intended for internal access only.';
+      }
+
+      if (/car|driver|display|experience|navigation/.test(q)) {
+        return 'STING delivers in-vehicle guidance and display concepts that combine navigation context with intuitive driving support.';
+      }
+
+      return 'I can answer questions about the STING team, its members, unit, and main project areas: VideoAR and Shud.';
+    }
+
+    async function checkInternalAccess() {
+      const referrerHost = document.referrer ? new URL(document.referrer).hostname : '';
+      const isInternalContext = /criticaltechworks\.com|localhost|127\.0\.0\.1/i.test(window.location.hostname) || /criticaltechworks\.com/i.test(referrerHost);
+
+      if (!isInternalContext) {
+        setBotInactive('The STING assistant is inactive in this environment.');
+        return;
+      }
+
+      try {
+        const checks = await Promise.all(
+          TEAM_LINKS.map((url) => fetch(url, { method: 'HEAD', mode: 'no-cors', cache: 'no-store' }).then(() => true).catch(() => false))
+        );
+
+        const reachable = checks.some(Boolean);
+
+        if (!reachable) {
+          setBotInactive('The STING assistant is inactive in this environment.');
+          return;
+        }
+
+        chatStatus.textContent = 'STING assistant is active and ready to answer.';
+        chatInput.disabled = false;
+        chatSend.disabled = false;
+      } catch (error) {
+        setBotInactive('The STING assistant is inactive in this environment.');
+      }
+    }
+
+    function onSendMessage() {
+      if (!botActive) {
+        return;
+      }
+
+      const question = chatInput.value.trim();
+      if (!question) {
+        return;
+      }
+
+      addMessage(question, 'user');
+      chatInput.value = '';
+
+      const answer = getAnswer(question);
+      window.setTimeout(() => addMessage(answer, 'bot'), 250);
+    }
+
+    chatSend.addEventListener('click', onSendMessage);
+    chatInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        onSendMessage();
+      }
+    });
+
+    checkInternalAccess();
+  </script>
 </body>
 </html>
