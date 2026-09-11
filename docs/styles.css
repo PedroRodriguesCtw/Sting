@@ -298,7 +298,8 @@ h3 { font-size: 1.3rem; }
   background: white;
 }
 
-.chatbot-input-row button {
+.chatbot-input-row button,
+.chatbot-action {
   padding: 0.8rem 1rem;
   border: none;
   border-radius: 12px;
@@ -309,9 +310,23 @@ h3 { font-size: 1.3rem; }
 }
 
 .chatbot-input-row button:disabled,
-.chatbot-input-row input:disabled {
+.chatbot-input-row input:disabled,
+.chatbot-action:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.chatbot-actions {
+  display: flex;
+  gap: 0.7rem;
+  justify-content: flex-end;
+  margin-top: 0.8rem;
+}
+
+.chatbot-action {
+  background: #edf4ff;
+  color: var(--primary);
+  border: 1px solid #cfe0ff;
 }
 
 .footer {

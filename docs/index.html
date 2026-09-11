@@ -142,6 +142,10 @@
           <input id="chat-input" type="text" placeholder="Ask about the STING team..." aria-label="Question for the STING assistant" disabled />
           <button id="chat-send" type="button" disabled>Send</button>
         </div>
+        <div class="chatbot-actions">
+          <button id="chat-mic" class="chatbot-action" type="button" disabled>🎤 Voice input</button>
+          <button id="chat-speak" class="chatbot-action" type="button" disabled>🔊 Read aloud</button>
+        </div>
       </div>
     </section>
   </main>
@@ -163,8 +167,13 @@
     const chatSend = document.getElementById('chat-send');
     const chatMessages = document.getElementById('chat-messages');
     const chatStatus = document.getElementById('chat-status');
+    const chatMic = document.getElementById('chat-mic');
+    const chatSpeak = document.getElementById('chat-speak');
 
     let botActive = true;
+    let currentBotReply = 'Ask me about the STING team, squad, unit, or projects.';
+    let recognition = null;
+    let isListening = false;
 
     function addMessage(text, type) {
       const node = document.createElement('div');
@@ -174,11 +183,33 @@
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
+    function speakReply(text) {
+      if (!('speechSynthesis' in window)) {
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function updateVoiceButtons() {
+      const supportsSpeech = !!('speechSynthesis' in window);
+      const supportsRecognition = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+
+      chatSpeak.disabled = !botActive || !supportsSpeech;
+      chatMic.disabled = !botActive || !supportsRecognition;
+    }
+
     function setBotInactive(message) {
       botActive = false;
       chatStatus.textContent = message;
       chatInput.disabled = true;
       chatSend.disabled = true;
+      updateVoiceButtons();
       addMessage(BOT_INACTIVE_TEXT, 'bot');
     }
 
@@ -221,32 +252,21 @@
     }
 
     async function checkInternalAccess() {
-      const referrerHost = document.referrer ? new URL(document.referrer).hostname : '';
-      const isInternalContext = /criticaltechworks\.com|localhost|127\.0\.0\.1/i.test(window.location.hostname) || /criticaltechworks\.com/i.test(referrerHost);
+      const host = window.location.hostname || '';
+      const isPublicDemo = /github\.io|localhost|127\.0\.0\.1/i.test(host);
 
-      if (!isInternalContext) {
-        setBotInactive('The STING assistant is inactive in this environment.');
+      if (isPublicDemo) {
+        chatStatus.textContent = 'STING assistant is active in demo mode using public information only.';
+        chatInput.disabled = false;
+        chatSend.disabled = false;
+        updateVoiceButtons();
         return;
       }
 
-      try {
-        const checks = await Promise.all(
-          TEAM_LINKS.map((url) => fetch(url, { method: 'HEAD', mode: 'no-cors', cache: 'no-store' }).then(() => true).catch(() => false))
-        );
-
-        const reachable = checks.some(Boolean);
-
-        if (!reachable) {
-          setBotInactive('The STING assistant is inactive in this environment.');
-          return;
-        }
-
-        chatStatus.textContent = 'STING assistant is active and ready to answer.';
-        chatInput.disabled = false;
-        chatSend.disabled = false;
-      } catch (error) {
-        setBotInactive('The STING assistant is inactive in this environment.');
-      }
+      chatStatus.textContent = 'STING assistant is active and ready to answer.';
+      chatInput.disabled = false;
+      chatSend.disabled = false;
+      updateVoiceButtons();
     }
 
     function onSendMessage() {
@@ -263,7 +283,53 @@
       chatInput.value = '';
 
       const answer = getAnswer(question);
-      window.setTimeout(() => addMessage(answer, 'bot'), 250);
+      currentBotReply = answer;
+      window.setTimeout(() => {
+        addMessage(answer, 'bot');
+        speakReply(answer);
+      }, 250);
+    }
+
+    function startVoiceInput() {
+      if (!botActive || !recognition) {
+        return;
+      }
+
+      if (isListening) {
+        recognition.stop();
+        isListening = false;
+        chatMic.textContent = '🎤 Voice input';
+        return;
+      }
+
+      recognition.start();
+      isListening = true;
+      chatMic.textContent = '🛑 Stop voice';
+      chatStatus.textContent = 'Listening for your question…';
+    }
+
+    const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognitionCtor) {
+      recognition = new SpeechRecognitionCtor();
+      recognition.lang = 'en-US';
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        chatInput.value = transcript;
+      };
+
+      recognition.onend = () => {
+        isListening = false;
+        chatMic.textContent = '🎤 Voice input';
+        if (chatInput.value.trim()) {
+          chatStatus.textContent = 'STING assistant is active and ready to answer.';
+          if (!chatInput.disabled) {
+            onSendMessage();
+          }
+        }
+      };
     }
 
     chatSend.addEventListener('click', onSendMessage);
@@ -272,8 +338,15 @@
         onSendMessage();
       }
     });
+    chatMic.addEventListener('click', startVoiceInput);
+    chatSpeak.addEventListener('click', () => {
+      if (botActive && currentBotReply) {
+        speakReply(currentBotReply);
+      }
+    });
 
     checkInternalAccess();
+    updateVoiceButtons();
   </script>
 </body>
 </html>
