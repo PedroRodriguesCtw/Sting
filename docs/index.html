@@ -183,7 +183,6 @@
         </div>
         <div class="chatbot-actions">
           <button id="chat-mic" class="chatbot-action" type="button" disabled>🎤 Voice input</button>
-          <button id="chat-speak" class="chatbot-action" type="button" disabled>🔊 Read aloud</button>
           <button id="chat-read-toggle" class="chatbot-action" type="button" disabled>🔇 Read aloud off</button>
         </div>
       </div>
@@ -203,7 +202,6 @@
     const chatMessages = document.getElementById('chat-messages');
     const chatStatus = document.getElementById('chat-status');
     const chatMic = document.getElementById('chat-mic');
-    const chatSpeak = document.getElementById('chat-speak');
     const chatReadToggle = document.getElementById('chat-read-toggle');
 
     let botActive = true;
@@ -309,7 +307,6 @@
       const supportsSpeech = !!('speechSynthesis' in window);
       const supportsRecognition = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
 
-      chatSpeak.disabled = !botActive || !supportsSpeech;
       chatMic.disabled = !botActive || !supportsRecognition;
       chatReadToggle.disabled = !botActive || !supportsSpeech;
       chatReadToggle.textContent = readAloudEnabled ? '🔇 Read aloud off' : '🔊 Read aloud on';
@@ -336,7 +333,7 @@
       }
 
       const references = payload.sources.map((source) => `${source.title}: ${source.url}`);
-      return `${payload.answer} Source references: ${references.join(' | ')}`;
+      return `${payload.answer} See resources: ${references.join(' | ')}`;
     }
 
     async function checkInternalAccess() {
@@ -443,11 +440,6 @@
       }
     });
     chatMic.addEventListener('click', startVoiceInput);
-    chatSpeak.addEventListener('click', () => {
-      if (botActive && currentBotReply) {
-        speakReply(currentBotReply);
-      }
-    });
     chatReadToggle.addEventListener('click', () => {
       readAloudEnabled = !readAloudEnabled;
       if (!readAloudEnabled) {
