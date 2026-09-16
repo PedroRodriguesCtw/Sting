@@ -235,11 +235,43 @@ h3 { font-size: 1.3rem; }
   padding: 0;
 }
 
+.hero-visual.card {
+  position: relative;
+}
+
 .hero-visual.card img {
   background: transparent;
   border-radius: 0;
   width: min(100%, 420px);
   margin: 0 auto;
+}
+
+.hero-copy .qr-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: min(100%, 140px);
+  margin: 0 auto 1rem;
+  text-align: center;
+}
+
+.qr-code {
+  width: min(100%, 130px) !important;
+  max-width: 130px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: white;
+  padding: 0.45rem;
+}
+
+.qr-label {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .meta {
