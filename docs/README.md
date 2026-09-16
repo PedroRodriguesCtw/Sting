@@ -19,3 +19,10 @@ This repository intentionally avoids internal department references and keeps on
 2. In the repository settings, open Pages.
 3. Choose the branch and root folder.
 4. Save and wait for the site to publish.
+
+## Run locally with backend
+1. Start the local server from `C:\IDC\Sting`:
+   `C:\Users\ctw00288\AppData\Local\Programs\Python\Python314\python.exe server.py`
+2. Open `http://127.0.0.1:8000`.
+3. The assistant will use the local knowledge API exposed by `server.py`.
+4. On startup, the backend tries to parse the SharePoint PDFs when they are already accessible in your session; if not, it silently falls back to the normal local knowledge base.

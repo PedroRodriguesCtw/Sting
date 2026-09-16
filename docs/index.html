@@ -18,6 +18,8 @@
         <a href="#team">Team</a>
         <a href="#projects">Projects</a>
         <a href="#resources">Resources</a>
+        <a href="#team-chatbot">STING assistant</a>
+        <a href="#game">Have FUN</a>
       </nav>
       <a class="btn btn-ghost" href="#resources">View resources</a>
     </div>
@@ -124,6 +126,32 @@
       </div>
     </section>
 
+    <section class="container section" id="game">
+      <div class="section-head">
+        <h2>Jogo do Galo</h2>
+        <p>Desafia o teu colega e tenta alinhar três símbolos na mesma linha.</p>
+      </div>
+
+      <div class="card game-panel">
+        <div class="game-header">
+          <div class="game-status" id="game-status">Vez do jogador X</div>
+          <button type="button" id="game-reset" class="btn btn-secondary">Reiniciar</button>
+        </div>
+
+        <div class="game-board" id="game-board" role="grid" aria-label="Jogo do Galo">
+          <button class="cell" type="button" data-index="0" aria-label="Casa 1"></button>
+          <button class="cell" type="button" data-index="1" aria-label="Casa 2"></button>
+          <button class="cell" type="button" data-index="2" aria-label="Casa 3"></button>
+          <button class="cell" type="button" data-index="3" aria-label="Casa 4"></button>
+          <button class="cell" type="button" data-index="4" aria-label="Casa 5"></button>
+          <button class="cell" type="button" data-index="5" aria-label="Casa 6"></button>
+          <button class="cell" type="button" data-index="6" aria-label="Casa 7"></button>
+          <button class="cell" type="button" data-index="7" aria-label="Casa 8"></button>
+          <button class="cell" type="button" data-index="8" aria-label="Casa 9"></button>
+        </div>
+      </div>
+    </section>
+
     <section id="resources" class="container section">
       <div class="section-head">
         <h2>Internal resources</h2>
@@ -156,6 +184,7 @@
         <div class="chatbot-actions">
           <button id="chat-mic" class="chatbot-action" type="button" disabled>🎤 Voice input</button>
           <button id="chat-speak" class="chatbot-action" type="button" disabled>🔊 Read aloud</button>
+          <button id="chat-read-toggle" class="chatbot-action" type="button" disabled>🔇 Read aloud off</button>
         </div>
       </div>
     </section>
@@ -168,11 +197,6 @@
   </footer>
 
   <script>
-    const TEAM_LINKS = [
-      'https://pulsar.criticaltechworks.com/units?id=a350d356-7341-49b7-b61c-49a0ac42bed1&units=a350d356-7341-49b7-b61c-49a0ac42bed1:squads&organizational-units-teams=e2f1c3a6-1870-46cb-a67d-d5ac8e30277d:general',
-      'https://pulsar.criticaltechworks.com/people?q=sting'
-    ];
-
     const BOT_INACTIVE_TEXT = 'The STING assistant is inactive in this environment.';
     const chatInput = document.getElementById('chat-input');
     const chatSend = document.getElementById('chat-send');
@@ -180,11 +204,13 @@
     const chatStatus = document.getElementById('chat-status');
     const chatMic = document.getElementById('chat-mic');
     const chatSpeak = document.getElementById('chat-speak');
+    const chatReadToggle = document.getElementById('chat-read-toggle');
 
     let botActive = true;
     let currentBotReply = 'Ask me about Team Sting, squad, unit, or projects.';
     let recognition = null;
     let isListening = false;
+    let readAloudEnabled = true;
 
     function addMessage(text, type) {
       const node = document.createElement('div');
@@ -195,7 +221,7 @@
     }
 
     function speakReply(text) {
-      if (!('speechSynthesis' in window)) {
+      if (!readAloudEnabled || !('speechSynthesis' in window)) {
         return;
       }
 
@@ -213,6 +239,8 @@
 
       chatSpeak.disabled = !botActive || !supportsSpeech;
       chatMic.disabled = !botActive || !supportsRecognition;
+      chatReadToggle.disabled = !botActive || !supportsSpeech;
+      chatReadToggle.textContent = readAloudEnabled ? '🔇 Read aloud off' : '🔊 Read aloud on';
     }
 
     function setBotInactive(message) {
@@ -224,63 +252,43 @@
       addMessage(BOT_INACTIVE_TEXT, 'bot');
     }
 
-    function getAnswer(question) {
-      const q = question.toLowerCase();
+    function stopReadAloud() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    }
 
-      if (!q || /^(hi|hello|hey|ola|olá|good morning|good afternoon|good evening)/.test(q)) {
-        return 'Hello! Ask me about Team Sting, members, unit, or the project focus.';
+    function formatAnswer(payload) {
+      if (!payload.sources || !payload.sources.length) {
+        return payload.answer;
       }
 
-      if (/team|squad|who|what.*team|who.*team/.test(q)) {
-        return 'STING is the MyJourney team focused on augmented driving experiences and guidance-driven display concepts.';
-      }
-
-      if (/member|members|people|integrant|squad/.test(q)) {
-        return 'The current STING squad includes Pedro SK, Frederico RKD, Cleyde SKD and Tiago SKD.';
-      }
-
-      if (/unit|myjourney|organization|org/.test(q)) {
-        return 'The team belongs to the MyJourney unit.';
-      }
-
-      if (/videoar|augmented view|project/.test(q)) {
-        return 'VideoAR is one of the main project tracks and focuses on augmented-reality guidance for driving experiences.';
-      }
-
-      if (/shud|slope|hud|head-up/.test(q)) {
-        return 'Shud is the Slope Head-Up Display project, focused on guidance and situational awareness in the driving context.';
-      }
-
-      if (/link|pulsar|team sting|team members|access|internal/.test(q)) {
-        return 'The official references are the Team Sting and Team members links in Pulsar, which are intended for internal access only.';
-      }
-
-      if (/car|driver|display|experience|navigation/.test(q)) {
-        return 'STING delivers in-vehicle guidance and display concepts that combine navigation context with intuitive driving support.';
-      }
-
-      return 'I can answer questions about Team Sting, its members, unit, and main project areas: VideoAR and Shud.';
+      const references = payload.sources.map((source) => `${source.title}: ${source.url}`);
+      return `${payload.answer} Source references: ${references.join(' | ')}`;
     }
 
     async function checkInternalAccess() {
-      const host = window.location.hostname || '';
-      const isPublicDemo = /github\.io|localhost|127\.0\.0\.1/i.test(host);
+      try {
+        const response = await fetch('/api/knowledge', { cache: 'no-store' });
+        if (!response.ok) {
+          throw new Error(`Knowledge API returned ${response.status}`);
+        }
 
-      if (isPublicDemo) {
-        chatStatus.textContent = 'STING assistant is active in demo mode using public information only.';
+        const payload = await response.json();
+        const hasRemoteContent = Array.isArray(payload.documents) && payload.documents.some((document) => document.hasRemoteContent);
+        chatStatus.textContent = hasRemoteContent
+          ? 'STING assistant is active with SharePoint document content when available.'
+          : (payload.statusText || 'STING assistant is active and ready to answer.');
         chatInput.disabled = false;
         chatSend.disabled = false;
         updateVoiceButtons();
-        return;
+      } catch (error) {
+        console.error(error);
+        setBotInactive('STING assistant is unavailable because the local knowledge API could not be reached.');
       }
-
-      chatStatus.textContent = 'STING assistant is active and ready to answer.';
-      chatInput.disabled = false;
-      chatSend.disabled = false;
-      updateVoiceButtons();
     }
 
-    function onSendMessage() {
+    async function onSendMessage() {
       if (!botActive) {
         return;
       }
@@ -292,13 +300,32 @@
 
       addMessage(question, 'user');
       chatInput.value = '';
+      chatInput.disabled = true;
+      chatSend.disabled = true;
+      chatStatus.textContent = 'Looking up the local knowledge base…';
 
-      const answer = getAnswer(question);
-      currentBotReply = answer;
-      window.setTimeout(() => {
+      try {
+        const response = await fetch(`/api/ask?q=${encodeURIComponent(question)}`, { cache: 'no-store' });
+        if (!response.ok) {
+          throw new Error(`Assistant API returned ${response.status}`);
+        }
+
+        const payload = await response.json();
+        const answer = formatAnswer(payload);
+        currentBotReply = answer;
         addMessage(answer, 'bot');
         speakReply(answer);
-      }, 250);
+        chatStatus.textContent = 'STING assistant is active and uses SharePoint content when it is reachable.';
+      } catch (error) {
+        console.error(error);
+        const answer = 'I could not reach the local assistant service.';
+        currentBotReply = answer;
+        addMessage(answer, 'bot');
+        chatStatus.textContent = 'STING assistant is unavailable because the local knowledge API could not be reached.';
+      } finally {
+        chatInput.disabled = false;
+        chatSend.disabled = false;
+      }
     }
 
     function startVoiceInput() {
@@ -355,9 +382,90 @@
         speakReply(currentBotReply);
       }
     });
+    chatReadToggle.addEventListener('click', () => {
+      readAloudEnabled = !readAloudEnabled;
+      if (!readAloudEnabled) {
+        stopReadAloud();
+      }
+      updateVoiceButtons();
+    });
 
     checkInternalAccess();
     updateVoiceButtons();
+  </script>
+
+  <script>
+    const cells = Array.from(document.querySelectorAll('.cell'));
+    const statusNode = document.getElementById('game-status');
+    const resetButton = document.getElementById('game-reset');
+
+    const winningLines = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+
+    let board = Array(9).fill('');
+    let currentPlayer = 'X';
+    let isGameActive = true;
+
+    function setStatus(message) {
+      statusNode.textContent = message;
+    }
+
+    function resetGame() {
+      board = Array(9).fill('');
+      currentPlayer = 'X';
+      isGameActive = true;
+      cells.forEach((cell) => {
+        cell.textContent = '';
+        cell.disabled = false;
+      });
+      setStatus('Vez do jogador X');
+    }
+
+    function getWinner() {
+      for (const [a, b, c] of winningLines) {
+        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+          return board[a];
+        }
+      }
+      return null;
+    }
+
+    function handleCellClick(event) {
+      const index = Number(event.currentTarget.dataset.index);
+
+      if (!isGameActive || board[index]) {
+        return;
+      }
+
+      board[index] = currentPlayer;
+      event.currentTarget.textContent = currentPlayer;
+      event.currentTarget.disabled = true;
+
+      const winner = getWinner();
+      if (winner) {
+        isGameActive = false;
+        setStatus(`Jogador ${winner} ganhou!`);
+        return;
+      }
+
+      if (board.every((cell) => cell)) {
+        isGameActive = false;
+        setStatus('Empate!');
+        return;
+      }
+
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      setStatus(`Vez do jogador ${currentPlayer}`);
+    }
+
+    cells.forEach((cell) => {
+      cell.addEventListener('click', handleCellClick);
+    });
+
+    resetButton.addEventListener('click', resetGame);
   </script>
 </body>
 </html>
