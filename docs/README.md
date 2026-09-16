@@ -8,11 +8,11 @@ This repository intentionally avoids internal department references and keeps on
 - Team overview
 - VideoAR summary
 - Shud summary
-- Internal resource links hosted on SharePoint
+- Local JSON-powered assistant knowledge base
 
-## Internal references
-- VideoAR reference: https://criticaltechworks-my.sharepoint.com/:b:/r/personal/ctw00288_criticaltechworks_com/Documents/Sting/Team%26Project%20presentation/VAR@DE-310.pdf?d=w43c4cd72ba67408f99a8056a5be3d48d&csf=1&web=1&e=lv1LBd
-- Shud onboarding: https://criticaltechworks-my.sharepoint.com/:b:/r/personal/ctw00288_criticaltechworks_com/Documents/Sting/Team%26Project%20presentation/2026-05-21_SlopeHUD_OnboardingCTW.pdf?d=wca2cb38ff8e8463c9d5ec1a4bf880b9b&csf=1&web=1&e=xu9f0r
+## Local knowledge
+- `docs/knowledge-base.json` contains the source data used by the assistant.
+- The backend reads that JSON directly and answers questions without extracting text from SharePoint PDFs.
 
 ## Publish with GitHub Pages
 1. Push this repository to GitHub.
@@ -25,4 +25,4 @@ This repository intentionally avoids internal department references and keeps on
    `C:\Users\ctw00288\AppData\Local\Programs\Python\Python314\python.exe server.py`
 2. Open `http://127.0.0.1:8000`.
 3. The assistant will use the local knowledge API exposed by `server.py`.
-4. On startup, the backend tries to parse the SharePoint PDFs when they are already accessible in your session; if not, it silently falls back to the normal local knowledge base.
+4. The API answers from `docs/knowledge-base.json` without any SharePoint PDF extraction.

@@ -173,7 +173,7 @@
     <section class="container section">
       <div class="card chatbot-panel" id="team-chatbot">
         <h3>STING assistant</h3>
-        <div class="chatbot-status" id="chat-status">Checking access to the team references…</div>
+        <div class="chatbot-status" id="chat-status">Checking the local project knowledge…</div>
         <div class="chat-messages" id="chat-messages" aria-live="polite">
           <div class="chat-message bot">Ask me about Team Sting, squad, unit, or projects.</div>
         </div>
@@ -211,6 +211,78 @@
     let recognition = null;
     let isListening = false;
     let readAloudEnabled = true;
+    let knowledgeDocuments = [];
+    let fallbackAnswer = 'I can answer questions about Team Sting, its members, unit, and the main project areas: VideoAR and SHUD.';
+
+    function normalize(text) {
+      return String(text || '').replace(/\s+/g, ' ').trim().toLowerCase();
+    }
+
+    function scoreDocument(question, documentEntry) {
+      const haystack = normalize(question);
+      let score = 0;
+
+      (documentEntry.keywords || []).forEach((keyword) => {
+        const normalizedKeyword = normalize(keyword);
+        if (normalizedKeyword && haystack.includes(normalizedKeyword)) {
+          score += Math.max(3, normalizedKeyword.split(' ').length);
+        }
+      });
+
+      (documentEntry.facts || []).forEach((fact) => {
+        const tokens = (fact.toLowerCase().match(/[a-z0-9\-\+]+/g) || []);
+        const shared = tokens.filter((token) => token.length > 3 && haystack.includes(token));
+        score += shared.length;
+      });
+
+      if (documentEntry.summary) {
+        const summaryTokens = normalize(documentEntry.summary).match(/[a-z0-9\-\+]+/g) || [];
+        const shared = summaryTokens.filter((token) => token.length > 4 && haystack.includes(token));
+        score += Math.min(shared.length, 10);
+      }
+
+      return score;
+    }
+
+    function answerQuestion(question, documents, fallback) {
+      const normalizedQuestion = normalize(question);
+      if (!normalizedQuestion) {
+        return { answer: 'Ask me about Team Sting, the squad, VideoAR, or SHUD.', sources: [] };
+      }
+
+      const ranked = documents
+        .map((documentEntry) => ({ score: scoreDocument(normalizedQuestion, documentEntry), documentEntry }))
+        .sort((left, right) => right.score - left.score);
+
+      const matched = ranked.filter((item) => item.score > 0).map((item) => item.documentEntry).slice(0, 2);
+
+      const genericAnswers = [
+        [/^(hi|hello|hey|ola|olá|good morning|good afternoon|good evening)\b/, 'Hello! Ask me about Team Sting, members, unit, VideoAR, or SHUD.'],
+        [/\b(team|squad|who.*team|what.*team)\b/, 'STING is the MyJourney team focused on augmented driving experiences and guidance-driven display concepts.'],
+        [/\b(member|members|people|integrant)\b/, 'The current STING squad includes Pedro SK, Frederico RKD, Cleyde RKD, and Tiago RKD.'],
+        [/\b(unit|myjourney|organization|org)\b/, 'The team belongs to the MyJourney unit.'],
+        [/\b(link|pulsar|access|internal)\b/, 'The Pulsar and internal links are for authorized access and depend on each user\'s permissions.'],
+      ];
+
+      if (matched.length) {
+        const answerParts = [];
+        const sources = [];
+        matched.forEach((documentEntry) => {
+          answerParts.push(documentEntry.summary || '');
+          (documentEntry.facts || []).slice(0, 3).forEach((fact) => answerParts.push(fact));
+          sources.push({ title: documentEntry.title, url: documentEntry.url });
+        });
+        return { answer: answerParts.join(' '), sources };
+      }
+
+      for (const [pattern, answer] of genericAnswers) {
+        if (pattern.test(normalizedQuestion)) {
+          return { answer, sources: [] };
+        }
+      }
+
+      return { answer: fallback, sources: [] };
+    }
 
     function addMessage(text, type) {
       const node = document.createElement('div');
@@ -269,26 +341,25 @@
 
     async function checkInternalAccess() {
       try {
-        const response = await fetch('/api/knowledge', { cache: 'no-store' });
+        const response = await fetch('knowledge-base.json', { cache: 'no-store' });
         if (!response.ok) {
-          throw new Error(`Knowledge API returned ${response.status}`);
+          throw new Error(`Knowledge file returned ${response.status}`);
         }
 
         const payload = await response.json();
-        const hasRemoteContent = Array.isArray(payload.documents) && payload.documents.some((document) => document.hasRemoteContent);
-        chatStatus.textContent = hasRemoteContent
-          ? 'STING assistant is active with SharePoint document content when available.'
-          : (payload.statusText || 'STING assistant is active and ready to answer.');
+        knowledgeDocuments = Array.isArray(payload.documents) ? payload.documents : [];
+        fallbackAnswer = payload.fallback_answer || fallbackAnswer;
+        chatStatus.textContent = payload.statusText || 'STING assistant is active and ready to answer.';
         chatInput.disabled = false;
         chatSend.disabled = false;
         updateVoiceButtons();
       } catch (error) {
         console.error(error);
-        setBotInactive('STING assistant is unavailable because the local knowledge API could not be reached.');
+        setBotInactive('STING assistant is unavailable because the knowledge JSON could not be loaded.');
       }
     }
 
-    async function onSendMessage() {
+    function onSendMessage() {
       if (!botActive) {
         return;
       }
@@ -302,26 +373,21 @@
       chatInput.value = '';
       chatInput.disabled = true;
       chatSend.disabled = true;
-      chatStatus.textContent = 'Looking up the local knowledge base…';
+      chatStatus.textContent = 'Looking up the local project knowledge…';
 
       try {
-        const response = await fetch(`/api/ask?q=${encodeURIComponent(question)}`, { cache: 'no-store' });
-        if (!response.ok) {
-          throw new Error(`Assistant API returned ${response.status}`);
-        }
-
-        const payload = await response.json();
+        const payload = answerQuestion(question, knowledgeDocuments, fallbackAnswer);
         const answer = formatAnswer(payload);
         currentBotReply = answer;
         addMessage(answer, 'bot');
         speakReply(answer);
-        chatStatus.textContent = 'STING assistant is active and uses SharePoint content when it is reachable.';
+        chatStatus.textContent = 'STING assistant is active and answers from the local project knowledge.';
       } catch (error) {
         console.error(error);
-        const answer = 'I could not reach the local assistant service.';
+        const answer = 'I could not answer using the local project knowledge.';
         currentBotReply = answer;
         addMessage(answer, 'bot');
-        chatStatus.textContent = 'STING assistant is unavailable because the local knowledge API could not be reached.';
+        chatStatus.textContent = 'STING assistant is unavailable because the knowledge JSON could not be loaded.';
       } finally {
         chatInput.disabled = false;
         chatSend.disabled = false;
