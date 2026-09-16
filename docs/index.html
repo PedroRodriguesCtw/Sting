@@ -21,7 +21,6 @@
         <a href="#team-chatbot">STING assistant</a>
         <a href="#game">Have FUN</a>
       </nav>
-      <a class="btn btn-ghost" href="#resources">View resources</a>
     </div>
   </header>
 
@@ -126,32 +125,6 @@
       </div>
     </section>
 
-    <section class="container section" id="game">
-      <div class="section-head">
-        <h2>Jogo do Galo</h2>
-        <p>Desafia o teu colega e tenta alinhar três símbolos na mesma linha.</p>
-      </div>
-
-      <div class="card game-panel">
-        <div class="game-header">
-          <div class="game-status" id="game-status">Vez do jogador X</div>
-          <button type="button" id="game-reset" class="btn btn-secondary">Reiniciar</button>
-        </div>
-
-        <div class="game-board" id="game-board" role="grid" aria-label="Jogo do Galo">
-          <button class="cell" type="button" data-index="0" aria-label="Casa 1"></button>
-          <button class="cell" type="button" data-index="1" aria-label="Casa 2"></button>
-          <button class="cell" type="button" data-index="2" aria-label="Casa 3"></button>
-          <button class="cell" type="button" data-index="3" aria-label="Casa 4"></button>
-          <button class="cell" type="button" data-index="4" aria-label="Casa 5"></button>
-          <button class="cell" type="button" data-index="5" aria-label="Casa 6"></button>
-          <button class="cell" type="button" data-index="6" aria-label="Casa 7"></button>
-          <button class="cell" type="button" data-index="7" aria-label="Casa 8"></button>
-          <button class="cell" type="button" data-index="8" aria-label="Casa 9"></button>
-        </div>
-      </div>
-    </section>
-
     <section id="resources" class="container section">
       <div class="section-head">
         <h2>Internal resources</h2>
@@ -184,6 +157,32 @@
         <div class="chatbot-actions">
           <button id="chat-mic" class="chatbot-action" type="button" disabled>🎤 Voice input</button>
           <button id="chat-read-toggle" class="chatbot-action" type="button" disabled>🔇 Read aloud off</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="container section" id="game">
+      <div class="section-head">
+        <h2>Tic-Tac-Toe</h2>
+        <p>Challenge a friend and try to line up three symbols in a row.</p>
+      </div>
+
+      <div class="card game-panel">
+        <div class="game-header">
+          <div class="game-status" id="game-status">Player X turn</div>
+          <button type="button" id="game-reset" class="btn btn-secondary">Reset</button>
+        </div>
+
+        <div class="game-board" id="game-board" role="grid" aria-label="Tic-Tac-Toe game">
+          <button class="cell" type="button" data-index="0" aria-label="Cell 1"></button>
+          <button class="cell" type="button" data-index="1" aria-label="Cell 2"></button>
+          <button class="cell" type="button" data-index="2" aria-label="Cell 3"></button>
+          <button class="cell" type="button" data-index="3" aria-label="Cell 4"></button>
+          <button class="cell" type="button" data-index="4" aria-label="Cell 5"></button>
+          <button class="cell" type="button" data-index="5" aria-label="Cell 6"></button>
+          <button class="cell" type="button" data-index="6" aria-label="Cell 7"></button>
+          <button class="cell" type="button" data-index="7" aria-label="Cell 8"></button>
+          <button class="cell" type="button" data-index="8" aria-label="Cell 9"></button>
         </div>
       </div>
     </section>
@@ -479,7 +478,7 @@
         cell.textContent = '';
         cell.disabled = false;
       });
-      setStatus('Vez do jogador X');
+      setStatus('Player X turn');
     }
 
     function getWinner() {
@@ -505,18 +504,18 @@
       const winner = getWinner();
       if (winner) {
         isGameActive = false;
-        setStatus(`Jogador ${winner} ganhou!`);
+        setStatus(`Player ${winner} wins!`);
         return;
       }
 
       if (board.every((cell) => cell)) {
         isGameActive = false;
-        setStatus('Empate!');
+        setStatus('Draw!');
         return;
       }
 
       currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-      setStatus(`Vez do jogador ${currentPlayer}`);
+      setStatus(`Player ${currentPlayer} turn`);
     }
 
     cells.forEach((cell) => {
