@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>STING | MyJourney Team & Projects</title>
   <meta name="description" content="Public landing page for Team Sting and its project overview: VideoAR and Shud." />
+  <link rel="icon" type="image/png" href="assets/sting-team-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13,7 +14,10 @@
 <body>
   <header class="topbar">
     <div class="container nav">
-      <a href="#home" class="brand">STING</a>
+      <a href="#home" class="brand">
+        <img src="assets/sting-team-logo.png?v=20260916" alt="" />
+        <span>STING</span>
+      </a>
       <nav>
         <a href="#team">Team</a>
         <a href="#projects">Projects</a>
@@ -92,8 +96,13 @@
 
       <div class="grid grid-2">
         <article class="card project">
-          <img class="project-brand" src="assets/bmwmini.png?v=20260916" alt="BMW and MINI" />
-          <h3>VideoAR</h3>
+          <div class="project-header">
+            <h3>VideoAR</h3>
+            <div class="project-brands" aria-label="Supported brands">
+              <img class="project-brand project-brand-bmwmini" src="assets/bmwmini.png?v=20260916" alt="BMW and MINI" />
+              <img class="project-brand project-brand-rolls-royce" src="assets/Rolls-Royce-Logo.png?v=20260918" alt="Rolls-Royce" />
+            </div>
+          </div>
           <p class="meta">Augmented View</p>
           <div class="project-visual">
             <img src="assets/videoar.png?v=20260916" alt="VideoAR navigation guidance display" />
@@ -107,13 +116,20 @@
             <li>Built with C++ and Android-Kotlin</li>
           </ul>
           <div class="link-box">
+            <a href="#" aria-disabled="true">Video demo</a>
             <a href="https://criticaltechworks-my.sharepoint.com/:b:/r/personal/ctw00288_criticaltechworks_com/Documents/Sting/Team%26Project%20presentation/VAR@DE-310.pdf?d=w43c4cd72ba67408f99a8056a5be3d48d&csf=1&web=1&e=lv1LBd" target="_blank" rel="noopener noreferrer">Open VideoAR reference</a>
           </div>
         </article>
 
         <article class="card project">
-          <img class="project-brand" src="assets/bmwmini.png?v=20260916" alt="BMW and MINI" />
-          <h3>Slope HUD (SHUD)</h3>
+          <div class="project-header">
+            <h3>Slope HUD (SHUD)</h3>
+            <div class="project-brands" aria-label="Supported brands">
+              <img class="project-brand project-brand-bmwmini" src="assets/bmwmini.png?v=20260916" alt="BMW and MINI" />
+              <img class="project-brand project-brand-rolls-royce" src="assets/Rolls-Royce-Logo.png?v=20260918" alt="Rolls-Royce" />
+              <img class="project-brand project-brand-alpina" src="assets/alpina_logo_white.png?v=20260918" alt="Alpina" />
+            </div>
+          </div>
           <p class="meta">Slope Headup Display</p>
           <div class="project-visual project-visual-shud">
             <img src="assets/SHUD.png?v=20260916" alt="SHUD head-up display in a driving environment" />
@@ -127,6 +143,7 @@
             <li>Aligned with modern display integration patterns</li>
           </ul>
           <div class="link-box">
+            <a href="#" aria-disabled="true">Video demo</a>
             <a href="https://criticaltechworks-my.sharepoint.com/:b:/r/personal/ctw00288_criticaltechworks_com/Documents/Sting/Team%26Project%20presentation/2026-05-21_SlopeHUD_OnboardingCTW.pdf?d=wca2cb38ff8e8463c9d5ec1a4bf880b9b&csf=1&web=1&e=xu9f0r" target="_blank" rel="noopener noreferrer">Open Shud onboarding</a>
           </div>
         </article>
@@ -143,8 +160,7 @@
         <div class="resource-grid">
           <a class="resource" href="https://criticaltechworks-my.sharepoint.com/:b:/r/personal/ctw00288_criticaltechworks_com/Documents/Sting/Team%26Project%20presentation/VAR@DE-310.pdf?d=w43c4cd72ba67408f99a8056a5be3d48d&csf=1&web=1&e=lv1LBd" target="_blank" rel="noopener noreferrer">VideoAR reference</a>
           <a class="resource" href="https://criticaltechworks-my.sharepoint.com/:b:/r/personal/ctw00288_criticaltechworks_com/Documents/Sting/Team%26Project%20presentation/2026-05-21_SlopeHUD_OnboardingCTW.pdf?d=wca2cb38ff8e8463c9d5ec1a4bf880b9b&csf=1&web=1&e=xu9f0r" target="_blank" rel="noopener noreferrer">Shud onboarding</a>
-          <a class="resource" href="#" aria-disabled="true">Presentation deck</a>
-          <a class="resource" href="#" aria-disabled="true">Video demo</a>
+          <a class="resource" href="presentation-deck.html">Presentation deck</a>
           <a class="resource" href="#" aria-disabled="true">Project roadmap</a>
           <a class="resource" href="#" aria-disabled="true">Architecture references</a>
         </div>
@@ -198,7 +214,10 @@
 
   <footer class="footer">
     <div class="container">
-      <p>STING | MyJourney</p>
+      <div class="footer-brand">
+        <img src="assets/sting-team-logo.png?v=20260916" alt="STING" />
+        <span>STING | MyJourney</span>
+      </div>
     </div>
   </footer>
 
