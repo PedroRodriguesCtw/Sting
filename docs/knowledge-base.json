@@ -6,8 +6,8 @@
     {
       "id": "videoar-reference",
       "title": "Resource",
-      "url": "#resources",
-      "summary": "VideoAR is an augmented driving guidance experience for next-generation in-vehicle displays.",
+      "url": "#VideoAR-reference",
+      "summary": "VideoAR is an augmented driving guidance experience for vehicle displays.",
       "facts": [
         "It helps drivers interpret maneuver and navigation context more intuitively.",
         "The public overview states it is built with C++ and Android-Kotlin.",
@@ -26,9 +26,9 @@
       ]
     },
     {
-      "id": "shud-onboarding",
+      "id": "shud-reference",
       "title": "Resource",
-      "url": "#resources",
+      "url": "#SHUD-reference",
       "summary": "SHUD is a slope head-up display experience that combines driving guidance with navigation context.",
       "facts": [
         "SHUD stands for Slope Head-Up Display.",

@@ -359,7 +359,7 @@
       }
 
       const references = payload.sources.map((source) => `${source.title}: ${source.url}`);
-      return `${payload.answer} See resources: ${references.join(' | ')}`;
+      return `${payload.answer} See: ${references.join(' | ')}`;
     }
 
     async function checkInternalAccess() {
