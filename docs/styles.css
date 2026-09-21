@@ -364,27 +364,23 @@ h3 { font-size: 1.3rem; }
 
 .resource-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 0.8rem;
 }
 
-.resource-grid-2 {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.resource-column {
+.resource-card {
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
-  padding: 0.5rem;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: #f8fbff;
 }
 
-.resource-column h3 {
-  margin-bottom: 0.25rem;
-  font-size: 1.15rem;
+.resource-card h3 {
+  margin-bottom: 0.2rem;
+}
+
+.resource-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
 }
 
 .resource {
