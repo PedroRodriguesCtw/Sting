@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>STING | MyJourney Team & Projects</title>
   <meta name="description" content="Public landing page for Team Sting and its project overview: VideoAR and Shud." />
+  <link rel="icon" type="image/png" href="assets/sting-team-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13,7 +14,10 @@
 <body>
   <header class="topbar">
     <div class="container nav">
-      <a href="#home" class="brand">STING</a>
+      <a href="#home" class="brand">
+        <img src="assets/sting-team-logo.png?v=20260916" alt="" />
+        <span>STING</span>
+      </a>
       <nav>
         <a href="#team">Team</a>
         <a href="#projects">Projects</a>
@@ -92,8 +96,13 @@
 
       <div class="grid grid-2">
         <article class="card project">
-          <img class="project-brand" src="assets/bmwmini.png?v=20260916" alt="BMW and MINI" />
-          <h3>VideoAR</h3>
+          <div class="project-header">
+            <h3>VideoAR</h3>
+            <div class="project-brands" aria-label="Supported brands">
+              <img class="project-brand project-brand-bmwmini" src="assets/bmwmini.png?v=20260916" alt="BMW and MINI" />
+              <img class="project-brand project-brand-rolls-royce" src="assets/rolls-royce-logo-cropped.png?v=20260921" alt="Rolls-Royce" />
+            </div>
+          </div>
           <p class="meta">Augmented View</p>
           <div class="project-visual">
             <img src="assets/videoar.png?v=20260916" alt="VideoAR navigation guidance display" />
@@ -109,8 +118,14 @@
         </article>
 
         <article class="card project">
-          <img class="project-brand" src="assets/bmwmini.png?v=20260916" alt="BMW and MINI" />
-          <h3>Slope HUD (SHUD)</h3>
+          <div class="project-header">
+            <h3>Slope HUD (SHUD)</h3>
+            <div class="project-brands" aria-label="Supported brands">
+              <img class="project-brand project-brand-bmwmini" src="assets/bmwmini.png?v=20260916" alt="BMW and MINI" />
+              <img class="project-brand project-brand-rolls-royce" src="assets/rolls-royce-logo-cropped.png?v=20260921" alt="Rolls-Royce" />
+              <img class="project-brand project-brand-alpina" src="assets/alpina_logo_white.png?v=20260918" alt="Alpina" />
+            </div>
+          </div>
           <p class="meta">Slope Headup Display</p>
           <div class="project-visual project-visual-shud">
             <img src="assets/SHUD.png?v=20260916" alt="SHUD head-up display in a driving environment" />
@@ -196,7 +211,10 @@
 
   <footer class="footer">
     <div class="container">
-      <p>STING | MyJourney</p>
+      <div class="footer-brand">
+        <img src="assets/sting-team-logo.png?v=20260916" alt="STING" />
+        <span>STING | MyJourney</span>
+      </div>
     </div>
   </footer>
 
