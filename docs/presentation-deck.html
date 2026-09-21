@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STING | SHUD Presentation Deck</title>
+  <meta name="description" content="SHUD presentation deck for Team Sting." />
+  <link rel="icon" type="image/png" href="assets/sting-team-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=20260918" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a href="index.html#home" class="brand">
+        <img src="assets/sting-team-logo.png?v=20260916" alt="" />
+        <span>STING</span>
+      </a>
+      <nav>
+        <a href="index.html#projects">Projects</a>
+        <a href="index.html#resources">Resources</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container deck-page">
+    <div class="section-head">
+      <h1>SHUD view</h1>
+      <p>Slope Headup Display</p>
+    </div>
+    <img class="deck-image" src="assets/shud-intro.png?v=20260918" alt="SHUD presentation overview" />
+    <button class="deck-zoom-button" id="deck-zoom-button" type="button">Zoom Slope HUD 3D</button>
+  </main>
+
+  <dialog class="deck-zoom-dialog" id="deck-zoom-dialog" aria-label="Slope HUD 3D detail">
+    <div class="deck-zoom-detail" role="img" aria-label="Slope HUD 3D label and display illustration"></div>
+  </dialog>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-brand">
+        <img src="assets/sting-team-logo.png?v=20260916" alt="STING" />
+        <span>STING | MyJourney</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const zoomButton = document.getElementById('deck-zoom-button');
+    const zoomDialog = document.getElementById('deck-zoom-dialog');
+
+    zoomButton.addEventListener('click', () => zoomDialog.showModal());
+    zoomDialog.addEventListener('click', (event) => {
+      if (event.target === zoomDialog) zoomDialog.close();
+    });
+  </script>
+</body>
+</html>
